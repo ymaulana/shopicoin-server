@@ -1,0 +1,13 @@
+{
+  "rules": {
+    "multiline-ternary": "error",
+    "operator-linebreak": [
+      "error",
+      "after",
+      { "overrides": { "?": "before", ":": "before", ".": "before" } }
+    ]
+  }
+}
+// extends: problems
+// env:
+//   node: true
