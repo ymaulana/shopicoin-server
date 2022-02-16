@@ -29,6 +29,7 @@ module.exports = {
       const voucher = await Voucher.findOne({ _id: id })
         .populate("category")
         .populate("nominals")
+        .populate("payment")
         .populate("user", "_id name phoneNumber");
 
       if (!voucher) {
