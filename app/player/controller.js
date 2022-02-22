@@ -200,7 +200,7 @@ module.exports = {
         });
       });
 
-      const history = await Transaction.findOne({
+      const history = await Transaction.find({
         player: req.player._id,
       })
         .populate("category")
