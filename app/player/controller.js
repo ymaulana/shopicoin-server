@@ -242,7 +242,7 @@ module.exports = {
       if (phoneNumber.length) payload.phoneNumber = phoneNumber;
 
       if (req.file) {
-        let temp_path = req.file.path;
+        let tmp_path = req.file.path;
         let originalExt =
           req.file.originalname.split(".")[
             req.file.originalname.split(".").length - 1
@@ -253,7 +253,7 @@ module.exports = {
           `public/uploads/${filename}`
         );
 
-        const src = fs.createReadStream(temp_path);
+        const src = fs.createReadStream(tmp_path);
         const dest = fs.createWriteStream(target_path);
 
         src.pipe(dest);
@@ -261,20 +261,24 @@ module.exports = {
         src.on("end", async () => {
           let player = await Player.findOne({ _id: req.player._id });
 
-          const currentImage = `${config.rootPath}/public/uploads/${player.thumbnail}`;
-
+          let currentImage = `${config.rootPath}/public/uploads/${player.avatar}`;
           if (fs.existsSync(currentImage)) {
             fs.unlinkSync(currentImage);
           }
 
           player = await Player.findOneAndUpdate(
-            { _id: req.player._id },
+            {
+              _id: req.player._id,
+            },
             {
               ...payload,
               avatar: filename,
             },
             { new: true, runValidators: true }
           );
+
+          console.log(player);
+
           res.status(201).json({
             data: {
               id: player.id,
@@ -307,7 +311,7 @@ module.exports = {
         });
       }
     } catch (err) {
-      if (err & (err.name === "ValidationError")) {
+      if (err && err.name === "ValidationError") {
         res.status(422).json({
           error: 1,
           message: err.message,
